@@ -5,18 +5,10 @@ const Todo = ({text, isCompleted, isDeleted}) => {
     return null; // Do not render the item if it is deleted
   }
   
-  else if (isCompleted) {
-    return (
-      <li className="done">
-        <del>{text}</del>
-      </li>
-    )
-  }
-  
   else {
     return (
-      <li className="not-done">
-        {text}
+      <li className="list">
+        {isCompleted ? <del>{text}</del> : text}
       </li>
     )
   }
