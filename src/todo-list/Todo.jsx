@@ -8,7 +8,7 @@ const Todo = ({text, isCompleted, isDeleted}) => {
   else {
     return (
       <li className="list">
-        {isCompleted ? <del>{text}</del> : text}
+        {text} {isCompleted && "✅"}
       </li>
     )
   }
