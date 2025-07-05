@@ -10,6 +10,7 @@ export default defineConfig({
         index: "index.html",
         contact: "contact.html",
         task: "task.html",
+        counter: "counter.html",
       }
     }
   }
