@@ -8,7 +8,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: "index.html",
-        contact: "contact.html"
+        contact: "contact.html",
+        task: "task.html",
       }
     }
   }
