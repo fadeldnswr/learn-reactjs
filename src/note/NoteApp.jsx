@@ -1,7 +1,7 @@
-import { useImmer } from "use-immer";
 import Note from "./Note";
 import NoteForm from "./NoteForm";
 import NoteList from "./NoteList";
+import { useReducer } from "react";
 
 
 // Create list of notes
@@ -14,32 +14,54 @@ const initialNotes = [
 ];
 
 const NoteApp = () => {
-  const [notes, setNotes] = useImmer(initialNotes);
+  const [notes, dispatch] = useReducer(notesReducer, initialNotes);
+
+  // Create reducer functions to handle adding, changing, and deleting notes
+  function notesReducer(notes, action){
+    switch(action.type){
+      case "ADD_NOTE":
+        return [
+          ...notes,
+          {
+            id: id++,
+            text: action.text,
+            done: false,
+          }
+        ]
+      case "CHANGE_NOTE":
+        return notes.map(note => 
+          note.id === action.id ? {...note, text: action.text, done: action.done} : note
+        )
+      case "DELETE_NOTE":
+        return notes.filter(note => note.id !== action.id);
+      default:
+        return notes; // If no action matches, return the current notes
+    }
+  }
 
   // Function to handle adding a new note
   function handleAddNote(text){
-    setNotes(draft => {
-      draft.push({
-        id: id++,
-        text: text,
-        done: false,
-      })
+    dispatch({
+      type: "ADD_NOTE",
+      text: text
     })
   }
 
   // Function to handle changing a note
   function handleChangeNote(note){
-    setNotes(draft => {
-      const index = draft.findIndex(item => item.id === note.id); // Find the index of the note to change
-      draft[index] = note; // Update the note at that index
+    dispatch({
+      type: "CHANGE_NOTE",
+      id: note.id,
+      text: note.text,
+      done: note.done
     })
   }
 
   // Function to handle deleting a note
   function handleDeleteNote(note){
-    setNotes(draft => {
-      const index = draft.findIndex(item => item.id === note.id); // Find the index of the note to delete
-      draft.splice(index, 1); // Remove the note at that index
+    dispatch({
+      type: "DELETE_NOTE",
+      id: note.id
     })
   }
 
@@ -48,7 +70,6 @@ const NoteApp = () => {
       <h1>Welcome to Note Application</h1>
       <NoteForm onAddNote={handleAddNote}/>
       <NoteList notes={notes} onChange={handleChangeNote} onDelete={handleDeleteNote} />
-      
     </div>
   )
 }
