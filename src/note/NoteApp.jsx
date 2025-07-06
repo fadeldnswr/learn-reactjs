@@ -16,23 +16,23 @@ const NoteApp = () => {
   const [notes, dispatch] = useImmerReducer(notesReducer, initialNotes);
 
   // Create reducer functions to handle adding, changing, and deleting notes
-  function notesReducer(draft, action){
+  function notesReducer(notes, action){
     if(action.type === "ADD_NOTE"){
-      draft.push({
+      notes.push({
         id: id++,
         text: action.text,
         done: false
       })
     } else if(action.type === "CHANGE_NOTE"){
-      const index = draft.find(note => note.id === action.id);
-      draft[index] = {
-        ...draft[index],
+      const index = notes.find(note => note.id === action.id);
+      notes[index] = {
+        ...notes[index],
         text: action.text,
         done: action.done
       }
     } else if(action.type === "DELETE_NOTE"){
-      const index = draft.findIndex(note => note.id === action.id);
-      draft.splice(index, 1);
+      const index = notes.findIndex(note => note.id === action.id);
+      notes.splice(index, 1);
     }
   }
 
