@@ -1,7 +1,6 @@
-import Note from "./Note";
+import { useImmerReducer } from "use-immer";
 import NoteForm from "./NoteForm";
 import NoteList from "./NoteList";
-import { useReducer } from "react";
 
 
 // Create list of notes
@@ -14,28 +13,26 @@ const initialNotes = [
 ];
 
 const NoteApp = () => {
-  const [notes, dispatch] = useReducer(notesReducer, initialNotes);
+  const [notes, dispatch] = useImmerReducer(notesReducer, initialNotes);
 
   // Create reducer functions to handle adding, changing, and deleting notes
-  function notesReducer(notes, action){
-    switch(action.type){
-      case "ADD_NOTE":
-        return [
-          ...notes,
-          {
-            id: id++,
-            text: action.text,
-            done: false,
-          }
-        ]
-      case "CHANGE_NOTE":
-        return notes.map(note => 
-          note.id === action.id ? {...note, text: action.text, done: action.done} : note
-        )
-      case "DELETE_NOTE":
-        return notes.filter(note => note.id !== action.id);
-      default:
-        return notes; // If no action matches, return the current notes
+  function notesReducer(draft, action){
+    if(action.type === "ADD_NOTE"){
+      draft.push({
+        id: id++,
+        text: action.text,
+        done: false
+      })
+    } else if(action.type === "CHANGE_NOTE"){
+      const index = draft.find(note => note.id === action.id);
+      draft[index] = {
+        ...draft[index],
+        text: action.text,
+        done: action.done
+      }
+    } else if(action.type === "DELETE_NOTE"){
+      const index = draft.findIndex(note => note.id === action.id);
+      draft.splice(index, 1);
     }
   }
 
